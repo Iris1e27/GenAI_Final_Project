@@ -18,6 +18,11 @@ export const fetchPaperContent = (filename) => {
     return axios.get(`${BASE_URL}/papers/read/${filename}`);
 };
 
+export const getPaperURL = (paperName) => {
+    return `${BASE_URL}/papers/read/${paperName}`;
+};
+
+
 // Generate and fetch a summary for a specific paper
 export const fetchPaperSummary = (filename) => {
     return axios.get(`${BASE_URL}/papers/summary/${filename}`);

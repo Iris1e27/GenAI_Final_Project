@@ -60,7 +60,7 @@ body {
 }
 
 .sidebar li {
-    padding: 0.5rem 0;
+    padding: 0.5rem;
     border-bottom: 1px solid #eee;
 }
 
@@ -69,7 +69,6 @@ body {
     background-color: #2a4071; 
     color: white;
 }
-
 
 li {
     white-space: nowrap;  /* 保持内容在一行 */
