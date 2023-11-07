@@ -14,8 +14,8 @@ function DisplayArea({ content, fileType }) {
     } else if (fileType === 'pdf') {
         return (
             <div className="display-area">
-                <PDFDisplay fileUrl={content} />
-                {/* <GooglePDFViewer fileURL={content} /> */}
+                {/* <PDFDisplay fileUrl={content} /> */}
+                <GooglePDFViewer fileURL={content} />
 
             </div>
         );
