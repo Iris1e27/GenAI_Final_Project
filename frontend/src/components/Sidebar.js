@@ -32,15 +32,15 @@ function Sidebar({ papers, onUpload, onPaperSelect, selectedPapers }) {
 
     return (
         <div className="sidebar">
-            <input type="file" accept=".pdf" onChange={handleFileChange} />
-            <button title="Only accepts PDF format" onClick={uploadFile}>Upload Paper</button>
+            <input type="file" accept=".bib" onChange={handleFileChange} />
+            <button title="Only accepts BibTex format" onClick={uploadFile}>Upload BibTex</button>
             <ul>
                 {papers.map((paper, idx) => (
                     <li key={idx} 
                         onClick={(event) => handlePaperClick(event, paper)} 
                         className={selectedPapers.includes(paper) ? "selected" : ""}
                     >
-                        {paper}
+                        {idx} - {paper.title} - {paper.year}
                     </li>
                 ))}
             </ul>

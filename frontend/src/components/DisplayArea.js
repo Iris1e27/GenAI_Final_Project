@@ -19,11 +19,15 @@ function DisplayArea({ content, fileType }) {
 
             </div>
         );
+    } else if (fileType === 'html') {
+        
+        return (
+            <div className="display-area" dangerouslySetInnerHTML={{ __html: content }}>
+            </div>
+        );
     } else {
         return (
-            <div className="display-area">
-                {content}
-            </div>
+            <div className="display-area"> No Content Here... </div>
         );
     }
 }

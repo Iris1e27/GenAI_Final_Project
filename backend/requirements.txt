@@ -3,3 +3,9 @@ uvicorn
 pydantic
 SQLAlchemy
 python-multipart
+tinydb
+bibtexparser
+openai==0.28.1
+networkx 
+matplotlib 
+scikit-learn

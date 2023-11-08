@@ -1,16 +1,20 @@
 import React, { useState } from 'react';
 
-function Navbar({ onHowToUse, onReadPaper, onGenerateSummary, onGenerateChart, onCompare, selectedPapers }) {
+function Navbar({ onHowToUse, 
+    onCheckDetail, onReadPaper, onGenerateSummary, onDeleteEntry, 
+    onGenerateChart, onCompare, selectedPapers }) {
 
     return (
         <div className="navbar">
             <div className="buttons">
-                <button onClick={onHowToUse}>How to use this app</button>
+                <button onClick={onHowToUse}>Help</button>
 
                 {selectedPapers.length === 1 && (
                     <>
+                        <button onClick={onCheckDetail}>Check Detail</button>
                         <button onClick={onReadPaper}>Read Paper</button>
                         <button onClick={onGenerateSummary}>Generate Summary</button>
+                        <button onClick={onDeleteEntry}>Delete Entry</button>
                     </>
                 )}
                 {selectedPapers.length > 1 && (
@@ -20,7 +24,9 @@ function Navbar({ onHowToUse, onReadPaper, onGenerateSummary, onGenerateChart, o
                     </>
                 )}
             </div>
-            <div className="product-name">ResearchHive</div>
+            <div className="product-name">
+                Research Hive
+            </div>
         </div>
     );
 }

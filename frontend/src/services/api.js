@@ -42,5 +42,53 @@ export const fetchDocument = (docName) => {
     return axios.get(`${BASE_URL}/documents/read/${docName}`);
 };
 
+// New API calls for BibTeX entries
+
+// Upload a BibTeX file
+export const uploadBibFile = (file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    return axios.post(`${BASE_URL}/bibs/upload`, formData);
+};
+
+// Fetch the list of all BibTeX entries
+export const fetchAllBibEntries = () => {
+    return axios.get(`${BASE_URL}/bibs/list/all`);
+};
+
+// Fetch a single BibTeX entry by citation key
+export const fetchBibEntry = (ID) => {
+    return axios.get(`${BASE_URL}/bibs/list/${ID}`);
+};
+
+// Delete a BibTeX entry by citation key
+export const deleteBibEntry = (ID) => {
+    return axios.delete(`${BASE_URL}/bibs/delete/${ID}`);
+};
+
+export const getBibEntryURL = (ID) => {
+    return axios.get(`${BASE_URL}/bibs/read/${ID}`);
+};
+
+export const getBibEntrySummary = (ID) => {
+    return axios.get(`${BASE_URL}/bibs/summary/${ID}`);
+};
+
+export const getBibEntryChart = (Bibs) => {
+    // 从 Bibs 中提取所有的 ID
+    const paper_ids = Bibs.map(bib => bib.ID);
+    
+    // 发送包含所有 ID 的请求给后端
+    return axios.post(`${BASE_URL}/bibs/generate_chart`, { "paper_ids": paper_ids });
+};
+
+export const getBibEntryComparison = (Bibs) => {
+    // 从 Bibs 中提取所有的 ID
+    const paper_ids = Bibs.map(bib => bib.ID);
+    
+    // 发送包含所有 ID 的请求给后端
+    return axios.post(`${BASE_URL}/bibs/compare_paper`, { "paper_ids": paper_ids });
+};
+
 
 // Add other API calls as needed
