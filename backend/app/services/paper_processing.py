@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import configparser
+import numpy as np
+import time
 
 # use config
 config = configparser.ConfigParser()
@@ -14,7 +16,7 @@ openai.api_key = config['openai']['api_key']
 
 # 定义本地文件夹路径
 local_summary_folder = "paper_summary"
-local_chart_folder = "paper_chart"
+local_chart_folder = "images"
 # comparison result will not be saved
 
 # 创建函数以获取摘要
@@ -51,10 +53,10 @@ def get_summary_by_entry(entry):
 
 
 def get_chart_by_entries(entries):
-    
-    # 检查本地文件夹是否存在，如果不存在则创建它
     os.makedirs(local_chart_folder, exist_ok=True)
-    
+
+    plt.rcParams['font.family'] = 'Microsoft YaHei'
+
     # 创建一个空的图
     G = nx.Graph()
 
@@ -68,35 +70,66 @@ def get_chart_by_entries(entries):
         G.add_node(i, label=entry['title'], year=entry['year'], author=', '.join(entry['author']))
         for j in range(i + 1, len(entries)):
             similarity = similarity_matrix[i, j]
-            if similarity > 0.5:  # 根据相似度阈值确定是否添加边
-                G.add_edge(i, j, weight=similarity)
+            G.add_edge(i, j, weight=similarity)
 
     # 设置节点和边的颜色和大小
-    node_colors = [1 - (int(entry['year']) - 2022) / (2023 - 2022) for entry in entries]
+    current_year = max([int(entry['year']) for entry in entries])
+    node_colors = [1 - (current_year - int(entry['year'])) / (current_year - 2022) for entry in entries]
     edge_colors = [1 - G[u][v]['weight'] for u, v in G.edges()]
     edge_weights = [G[u][v]['weight'] * 5 for u, v in G.edges()]
 
     # 绘制网络图
-    pos = nx.spring_layout(G, seed=42)  # 使用Spring布局算法布局图
-    nx.draw(G, pos, with_labels=True, node_color=node_colors, cmap='viridis', node_size=3000, font_size=8, font_color='black', edge_color=edge_colors, width=edge_weights)
+    pos = nx.spring_layout(G, seed=42)
+    nx.draw(G, pos, node_color=node_colors, cmap='viridis', node_size=3000, font_size=8, font_color='black', edge_color=edge_colors, width=edge_weights)
 
-    # 添加颜色条
-    sm = plt.cm.ScalarMappable(cmap='viridis', norm=plt.Normalize(vmin=0, vmax=1))
-    sm.set_array([])
-    ax = plt.gca()  # 获取当前的轴
-    cbar = plt.colorbar(sm, ax=ax, label='年份越新，颜色越深')
+    # 添加自定义标签（作者和年份）
+    labels = {}
+    for i, entry in enumerate(entries):
+        labels[i] = f"\n\n{entry['ID']}\n\n{entry['author'][0]}, ({entry['year']})"
+    nx.draw_networkx_labels(G, pos, labels, font_size=6)
 
+    # 获取相似度矩阵的最小和最大值
+    min_similarity = np.min(similarity_matrix)
+    max_similarity = np.max(similarity_matrix)
 
-    # 保存图像到本地文件夹
+    # 创建相似度颜色条
+    similarity_norm = plt.Normalize(vmin=min_similarity, vmax=max_similarity)
+    similarity_sm = plt.cm.ScalarMappable(cmap='plasma', norm=similarity_norm)
+    similarity_sm.set_array([])
+    ax = plt.gca()
+    similarity_cbar = plt.colorbar(similarity_sm, ax=ax, orientation='vertical', fraction=0.046, pad=0.09)
+    similarity_cbar.set_label('Similarity')
+
+    # 保存图像到本地文件夹 str(time.time())+
     chart_filename = 'network_graph.png'
     chart_path = os.path.join(local_chart_folder, chart_filename)
+    
+    # 如果文件已存在，则删除
+    if os.path.exists(chart_path):
+        os.remove(chart_path)
+    print(os.getcwd() + chart_path)
     plt.savefig(chart_path, format='png', bbox_inches='tight')
     
+    # 关闭当前的图形
+    plt.close()
+
     # 返回图像文件的URL
     return chart_path
 
+
 def get_comparison_by_entries(entries):
-    prompt_text = f"Please help me compare these paper: {entries}"
+    papers_text = "\n\n".join([f"**{entry['title']}**:\n{entry['abstract']}" for entry in entries])
+    prompt_text = f"""
+        I have a list of papers that having relationship among them: like share similar findings, unveiling new research questiosn and gaps, presenting opposite findings, things like this. 
+        Here are their titles and abstracts: 
+        {papers_text}
+        Please help me compare these paper and find relationships among them.
+        Format:
+        **Paper 1 and Paper 2**: Relationship.\n
+        **Paper 2 and Paper 3**: Relationship.\n
+        **Paper 1 and Paper 3**: Relationship.\n
+        ... and so on.
+        """
     response = openai.Completion.create(
         engine="text-davinci-003",
         prompt=prompt_text,
@@ -104,3 +137,32 @@ def get_comparison_by_entries(entries):
     )
     result = response["choices"][0]["text"].strip()
     return result
+
+
+def get_categories_by_entries(entries):
+    papers_text = "\n\n".join([f"**{entry['title']}**:\n{entry['abstract']}" for entry in entries])
+    prompt_text = f"""
+        I've gathered academic materials for my research. Here are their titles and abstracts:
+        {papers_text}
+        First, group materials into themes. Name each theme according to the papers' contributions.
+        Second, rank papers based on relevance and tell users which one is worth to read.
+        Third, Summarize**: Ooffer a concise summary for each, focusing on findings, methods, and conclusions.
+        Output Format like this:
+        - **Theme 1**: ...\n
+            **Title of Paper 1**: Summary.\n
+            **Title of Paper 2**: Summary.\n
+            ... and so on.\n
+        - **Theme 2**:\n
+            **Title of Paper 1**: Summary.\n
+            **Title of Paper 2**: Summary.\n
+            ... and so on.\n
+        """
+    response = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=prompt_text,
+        max_tokens=1000
+    )
+    result = response.choices[0].text.strip()
+    return result
+
+

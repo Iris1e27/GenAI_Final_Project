@@ -3,8 +3,8 @@ import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import DisplayArea from './components/DisplayArea';
 import { uploadBibFile, fetchAllBibEntries, fetchBibEntry, deleteBibEntry, getBibEntryURL, getBibEntrySummary } from './services/api';
-import { getBibEntryChart, getBibEntryComparison } from './services/api';
-import { uploadPaper, fetchPaperList, fetchDocument } from './services/api';
+import { getBibEntryCategorization, getBibEntryChart, getBibEntryComparison } from './services/api';
+import { BASE_URL, uploadPaper, fetchPaperList, fetchDocument } from './services/api';
 import { fetchPaperContent, getPaperURL, fetchPaperSummary, fetchPaperChart, comparePapers } from './services/api';
 
 function App() {
@@ -92,7 +92,7 @@ function App() {
             console.log("response.data: ", response.data.url);
             // 在新标签页中打开URL
             window.open(response.data.url, '_blank');
-            setContent(`Now you are reading this paper: \"${bib.title}\". \n`);
+            setContent(`Now you are reading this paper: <strong>\"${bib.title}\"</strong>. \n`);
             setFileType('html');
         });
     };
@@ -114,41 +114,64 @@ function App() {
             console.log("response.data: ", response.data.bibs);
             setBibs(response.data.bibs);
             setSelectedBibs([]);
-            setContent(`Now this paper \"${bib.title}\" is deleted. \n`);
+            setContent(`Now this paper <strong>\"${bib.title}\"</strong> is deleted. \n`);
             setFileType('html');
         });
     }
-    
-    
-    const handleGenerateChart = () => {
-        console.log("handleGenerateChart...");
-        getBibEntryChart(selectedBibs).then(response => {
-            console.log("response.data: ", response.data);
-            setContent(`<img src="${response.data}" alt="Generated Chart" />`);
-            setFileType('html');
+
+    const handleCategorizeThemes = () => {
+        console.log("handleCategorizeThemes...");
+        getBibEntryCategorization(selectedBibs).then(response => {
+            console.log("response.data: ", response.data.result);
+            let detailMdString = '';
+            selectedBibs.forEach((entry, idx) => {
+                detailMdString += `**Paper ${idx}: ${entry.title}**\n\n`;
+            });
+            detailMdString += '**Categorization Result:** \n\n ';
+            detailMdString += `${response.data.result} \n`;
+            setContent(detailMdString);
+            setFileType('md');
         });
-    };
+    }
 
     const handleComparePapers = () => {
         console.log("handleComparePapers...");
         getBibEntryComparison(selectedBibs).then(response => {
             console.log("response.data: ", response.data.result);
-            setContent(`Comparison result: ${response.data.result} \n`);
+            let detailMdString = '';
+            selectedBibs.forEach((entry, idx) => {
+                detailMdString += `**Paper ${idx}: ${entry.title}**\n\n`;
+            });
+            detailMdString += '**Comparison Result:** \n\n ';
+            detailMdString += `${response.data.result} \n`;
+            setContent(detailMdString);
+            setFileType('md');
+        });
+    };
+    
+    const handleGenerateChart = () => {
+        console.log("handleGenerateChart...");
+        getBibEntryChart(selectedBibs).then(response => {
+            console.log("response.data: ", response.data.image_url);
+            let full_image_url = BASE_URL+"/"+response.data.image_url.replace(/\\/g, '/');
+            console.log("full_image_url: ", full_image_url);
+            setContent(`<img src="${full_image_url}" alt="Generated Chart" />`);
             setFileType('html');
         });
     };
 
-
+    
     return (
         <div>
             <Navbar 
                 onHowToUse={handleHowToUse}
                 onCheckDetail={handleCheckDetail}
                 onReadPaper={handleReadPaper}
-                onDeleteEntry={handleDeleteEntry}
                 onGenerateSummary={handleSummaryEntry}
-                onGenerateChart={handleGenerateChart}
+                onDeleteEntry={handleDeleteEntry}
+                onCategorize={handleCategorizeThemes}
                 onCompare={handleComparePapers}
+                onGenerateChart={handleGenerateChart}
                 selectedPapers={selectedBibs}
             />
 

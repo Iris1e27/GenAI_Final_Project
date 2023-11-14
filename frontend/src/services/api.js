@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:8000';  // Adjust according to your backend URL
+// const BASE_URL = 'http://localhost:8000';  // Adjust according to your backend URL
+
+export const BASE_URL = 'http://localhost:8000';
 
 export const uploadPaper = (file) => {
     const formData = new FormData();
@@ -74,6 +76,14 @@ export const getBibEntrySummary = (ID) => {
     return axios.get(`${BASE_URL}/bibs/summary/${ID}`);
 };
 
+export const getBibEntryCategorization = (Bibs) => {
+    // 从 Bibs 中提取所有的 ID
+    const paper_ids = Bibs.map(bib => bib.ID);
+    
+    // 发送包含所有 ID 的请求给后端
+    return axios.post(`${BASE_URL}/bibs/categorize_themes`, { "paper_ids": paper_ids });
+};
+
 export const getBibEntryChart = (Bibs) => {
     // 从 Bibs 中提取所有的 ID
     const paper_ids = Bibs.map(bib => bib.ID);
@@ -89,6 +99,7 @@ export const getBibEntryComparison = (Bibs) => {
     // 发送包含所有 ID 的请求给后端
     return axios.post(`${BASE_URL}/bibs/compare_paper`, { "paper_ids": paper_ids });
 };
+
 
 
 // Add other API calls as needed

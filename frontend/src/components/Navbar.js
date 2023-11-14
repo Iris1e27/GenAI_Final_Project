@@ -2,13 +2,11 @@ import React, { useState } from 'react';
 
 function Navbar({ onHowToUse, 
     onCheckDetail, onReadPaper, onGenerateSummary, onDeleteEntry, 
-    onGenerateChart, onCompare, selectedPapers }) {
+    onCategorize, onCompare, onGenerateChart, selectedPapers }) {
 
     return (
         <div className="navbar">
             <div className="buttons">
-                <button onClick={onHowToUse}>Help</button>
-
                 {selectedPapers.length === 1 && (
                     <>
                         <button onClick={onCheckDetail}>Check Detail</button>
@@ -19,10 +17,13 @@ function Navbar({ onHowToUse,
                 )}
                 {selectedPapers.length > 1 && (
                     <>
+                        <button onClick={onCategorize}>Categorize Themes</button>
+                        {/* <button onClick={onCompare}>Compare Papers</button> */}
                         <button onClick={onGenerateChart}>Generate Chart</button>
-                        <button onClick={onCompare}>Compare Papers</button>
                     </>
                 )}
+
+                <button onClick={onHowToUse}>Help</button>
             </div>
             <div className="product-name">
                 Research Hive
