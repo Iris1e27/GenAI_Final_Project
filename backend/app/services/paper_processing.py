@@ -74,34 +74,37 @@ def get_chart_by_entries(entries):
 
     # 设置节点和边的颜色和大小
     current_year = max([int(entry['year']) for entry in entries])
-    node_colors = [1 - (current_year - int(entry['year'])) / (current_year - 2022) for entry in entries]
-    edge_colors = [1 - G[u][v]['weight'] for u, v in G.edges()]
+    node_colors = [(current_year - int(entry['year'])) / (current_year) for entry in entries]
+    edge_colors = [G[u][v]['weight'] for u, v in G.edges()]
     edge_weights = [G[u][v]['weight'] * 5 for u, v in G.edges()]
 
     # 绘制网络图
     pos = nx.spring_layout(G, seed=42)
-    nx.draw(G, pos, node_color=node_colors, cmap='viridis', node_size=3000, font_size=8, font_color='black', edge_color=edge_colors, width=edge_weights)
+    nx.draw(G, pos, node_color=node_colors, cmap='cividis', node_size=3000, font_size=8, font_color='black', edge_color=edge_colors, width=edge_weights)
 
     # 添加自定义标签（作者和年份）
     labels = {}
     for i, entry in enumerate(entries):
         labels[i] = f"\n\n{entry['ID']}\n\n{entry['author'][0]}, ({entry['year']})"
-    nx.draw_networkx_labels(G, pos, labels, font_size=6)
+    nx.draw_networkx_labels(G, pos, labels, font_size=6, 
+                        bbox=dict(facecolor='white', alpha=0.6, edgecolor='none'))
 
     # 获取相似度矩阵的最小和最大值
     min_similarity = np.min(similarity_matrix)
     max_similarity = np.max(similarity_matrix)
+    print("min_similarity:"+str(max_similarity))
+    print("max_similarity:"+str(max_similarity))
 
     # 创建相似度颜色条
     similarity_norm = plt.Normalize(vmin=min_similarity, vmax=max_similarity)
-    similarity_sm = plt.cm.ScalarMappable(cmap='plasma', norm=similarity_norm)
+    similarity_sm = plt.cm.ScalarMappable(cmap='plasma_r', norm=similarity_norm)
     similarity_sm.set_array([])
     ax = plt.gca()
     similarity_cbar = plt.colorbar(similarity_sm, ax=ax, orientation='vertical', fraction=0.046, pad=0.09)
     similarity_cbar.set_label('Similarity')
 
-    # 保存图像到本地文件夹 str(time.time())+
-    chart_filename = 'network_graph.png'
+    # 保存图像到本地文件夹 
+    chart_filename = str(time.time())+'_network_graph.png'
     chart_path = os.path.join(local_chart_folder, chart_filename)
     
     # 如果文件已存在，则删除

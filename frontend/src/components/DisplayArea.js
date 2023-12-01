@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
+import 'github-markdown-css';
 import PDFDisplay from './PDFDisplay';
 import GooglePDFViewer from './GooglePDFViewer';
 

@@ -97,3 +97,20 @@ button:hover {
     background-color: #6c87b8;  /* 当鼠标悬停在按钮上时，颜色稍微变深 */
 }
 
+.display-area {
+    font-family: 'Arial', sans-serif;
+    color: #333;
+    padding: 15px;
+    word-wrap: break-word; /* 允许长单词或URL在必要时换行 */
+    overflow-wrap: break-word; /* 同上，确保内容不会溢出 */
+    overflow-x: auto; /* 允许必要时水平滚动 */
+    white-space: pre-wrap; /* 保持空白符的格式，同时允许文本换行 */
+}
+
+.display-area ul, li {
+    word-wrap: break-word; /* 允许长单词或URL在必要时换行 */
+    overflow-wrap: break-word; /* 同上，确保内容不会溢出 */
+    overflow-x: auto; /* 允许必要时水平滚动 */
+    white-space: pre-wrap; /* 保持空白符的格式，同时允许文本换行 */
+}
+

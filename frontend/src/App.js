@@ -30,7 +30,7 @@ function App() {
         uploadBibFile(file).then(response => {
             console.log("response.data: ", response.data.bibs);
             setBibs(response.data.bibs);
-            setContent(`You have uploaded ${response.data.bibs.length} paper in total. \n`);
+            setContent(`You have uploaded ${response.data.bibs.length} paper(s) in total. \n`);
             setFileType('html');
         });
     };
@@ -155,7 +155,8 @@ function App() {
             console.log("response.data: ", response.data.image_url);
             let full_image_url = BASE_URL+"/"+response.data.image_url.replace(/\\/g, '/');
             console.log("full_image_url: ", full_image_url);
-            setContent(`<img src="${full_image_url}" alt="Generated Chart" />`);
+            let detailHTMLString = `<img src="${full_image_url}" alt="Generated Chart" />`;
+            setContent(detailHTMLString);
             setFileType('html');
         });
     };
