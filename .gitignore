@@ -6,3 +6,5 @@ node_modules/
 build/
 uploaded_files/
 backend/config.ini
+backend/images/
+backend/paper_summary/

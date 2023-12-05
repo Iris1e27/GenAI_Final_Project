@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 
-function Sidebar({ papers, onUpload, onPaperSelect, selectedPapers }) {
+function Sidebar({ papers, onPaperSelect, selectedPapers }) {
     const [selectedFile, setSelectedFile] = useState(null);
 
-    const handleFileChange = (event) => {
-        setSelectedFile(event.target.files[0]);
-    };
+    // const handleFileChange = (event) => {
+    //     setSelectedFile(event.target.files[0]);
+    // };
 
-    const uploadFile = () => {
-        if (selectedFile) {
-            onUpload(selectedFile);
-            setSelectedFile(null);  // Clear the selected file after upload
-        }
-    };
+    // const uploadFile = () => {
+    //     if (selectedFile) {
+    //         onUpload(selectedFile);
+    //         setSelectedFile(null);  // Clear the selected file after upload
+    //     }
+    // };
 
     const handlePaperClick = (event, paperName) => {
         // 如果 Ctrl 或 Cmd 键被按下，执行多选逻辑
@@ -31,19 +31,24 @@ function Sidebar({ papers, onUpload, onPaperSelect, selectedPapers }) {
     };
 
     return (
+        papers==null ||papers.length==0 ? null :
         <div className="sidebar">
-            <input type="file" accept=".bib" onChange={handleFileChange} />
-            <button title="Only accepts BibTex format" onClick={uploadFile}>Upload BibTex</button>
-            <ul>
-                {papers.map((paper, idx) => (
-                    <li key={idx} 
-                        onClick={(event) => handlePaperClick(event, paper)} 
-                        className={selectedPapers.includes(paper) ? "selected" : ""}
-                    >
-                        {idx} - {paper.title} - {paper.year}
-                    </li>
-                ))}
-            </ul>
+            <div class="sidebar-content">
+                {/* <input type="file" accept=".bib" onChange={handleFileChange} />
+                <button title="Only accepts BibTex format" onClick={uploadFile}>Upload BibTex</button> */}
+                <ul>
+                    {papers.map((paper, idx) => (
+                        <li key={idx} 
+                            onClick={(event) => handlePaperClick(event, paper)} 
+                            className={selectedPapers.includes(paper) ? "selected" : ""}
+                        >
+                            {idx+1} - {paper.title} 
+                            <br />
+                            <div className="grey-text">{paper.author.replaceAll(" and ", " ")} - {paper.year}</div>
+                        </li>
+                    ))}
+                </ul>
+            </div>
         </div>
     );
 }

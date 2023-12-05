@@ -23,3 +23,9 @@ api_key = sk-...
 2. `npm install`
 
 3. `npm start`
+
+## Log
+
+1. Upload: pdf -> bib.
+2. Color: blue -> green.
+3. 

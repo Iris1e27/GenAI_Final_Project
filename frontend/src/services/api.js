@@ -68,6 +68,11 @@ export const deleteBibEntry = (ID) => {
     return axios.delete(`${BASE_URL}/bibs/delete/${ID}`);
 };
 
+// Delete a BibTeX entry by citation key
+export const deleteAllBibEntries = () => {
+    return axios.delete(`${BASE_URL}/bibs/delete_all`);
+};
+
 export const getBibEntryURL = (ID) => {
     return axios.get(`${BASE_URL}/bibs/read/${ID}`);
 };

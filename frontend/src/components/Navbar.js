@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 function Navbar({ onHowToUse, 
-    onCheckDetail, onReadPaper, onGenerateSummary, onDeleteEntry, 
+    onCheckDetail, onReadPaper, onGenerateSummary, onDeleteEntry, onReset, onUpload,
     onCategorize, onCompare, onGenerateChart, selectedPapers }) {
 
     return (
@@ -23,7 +23,15 @@ function Navbar({ onHowToUse,
                     </>
                 )}
 
-                <button onClick={onHowToUse}>Help</button>
+                <button onClick={onReset}>Reset</button>
+                <button onClick={onUpload}>Upload</button>
+                <button onClick={onHowToUse}>About</button>
+                {selectedPapers.length >= 1 && (
+                    <>
+                        <span className="selected-file" style={{backgroundColor: "white"}}>
+                            Selected: {selectedPapers.length} paper(s) </span>
+                    </>
+                )}
             </div>
             <div className="product-name">
                 Research Hive

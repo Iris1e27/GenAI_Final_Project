@@ -53,6 +53,15 @@ class BibDatabaseUtils:
         Entry = Query()
         deleted_count = len(self.db.remove(Entry.ID == ID))
         return deleted_count > 0
+    
+    def delete_all_entries(self):
+        try:
+            self.db.truncate()
+            print(f"trucate ok")
+            return True
+        except Exception as e:
+            print(f"Error occurred: {e}")
+            return False
 
 
 # 示例使用

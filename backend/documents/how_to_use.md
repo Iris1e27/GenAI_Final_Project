@@ -1,4 +1,4 @@
-# Welcome to ResearchHive
+# Welcome to Research Hive
 
 Here is an instruction about how to use this app.
 
@@ -22,3 +22,7 @@ When multiple papers are selected, the user can:
    - TF-IDF is a numerical statistic that reflects how important a word is to a document in a collection. It helps in understanding the relevance of words within each paper, enhancing the accuracy of similarity assessments.
    - Cosine Similarity measures the cosine of the angle between two non-zero vectors in a multi-dimensional space. In the context of this app, it is used to quantify the similarity between two papers based on their TF-IDF vectors. The closer the cosine value is to 1, the greater the similarity between the papers.
    - The resultant chart visually represents these similarities, using links and clustering to show how closely related different papers are to each other. This feature is particularly useful for identifying clusters of research on similar topics, trends in research over time, and potential gaps in the literature.
+
+## 4. Reset and Upload
+
+You can use this to clear all papers or upload more papers. 

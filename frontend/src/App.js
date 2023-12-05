@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
+import Loading from './components/Loading';
 import Sidebar from './components/Sidebar';
+import SidebarRight from './components/SidebarRight';
 import DisplayArea from './components/DisplayArea';
-import { uploadBibFile, fetchAllBibEntries, fetchBibEntry, deleteBibEntry, getBibEntryURL, getBibEntrySummary } from './services/api';
+import { uploadBibFile, fetchAllBibEntries, fetchBibEntry, deleteBibEntry, deleteAllBibEntries, getBibEntryURL, getBibEntrySummary } from './services/api';
 import { getBibEntryCategorization, getBibEntryChart, getBibEntryComparison } from './services/api';
 import { BASE_URL, uploadPaper, fetchPaperList, fetchDocument } from './services/api';
 import { fetchPaperContent, getPaperURL, fetchPaperSummary, fetchPaperChart, comparePapers } from './services/api';
@@ -12,6 +14,7 @@ function App() {
     const [selectedBibs, setSelectedBibs] = useState([]);
     const [content, setContent] = useState('');
     const [fileType, setFileType] = useState(''); // 新增：文件类型状态
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         fetchAllBibEntries()
@@ -99,12 +102,14 @@ function App() {
 
     const handleSummaryEntry = () => {
         console.log("handleSummaryEntry...");
+        setIsLoading(true);
         let bib = selectedBibs[0];
         getBibEntrySummary(bib.ID).then(response => {
             console.log("response.data: ", response.data.summary);
             setContent(`<strong>Summary for \"${bib.title}\": </strong><br><br> ${response.data.summary }`);
-            setFileType('html');
+            setFileType('html'); setIsLoading(false);
         });
+        
     }
 
     const handleDeleteEntry = () => {
@@ -119,8 +124,20 @@ function App() {
         });
     }
 
+    const handleReset = () => {
+        console.log("handleReset...");
+        deleteAllBibEntries().then(response => {
+            console.log("response.message: " + response.message);
+        });
+        setBibs([]); 
+        setSelectedBibs([]);
+        setFileType('');
+    };
+    
+
     const handleCategorizeThemes = () => {
         console.log("handleCategorizeThemes...");
+        setIsLoading(true);
         getBibEntryCategorization(selectedBibs).then(response => {
             console.log("response.data: ", response.data.result);
             let detailMdString = '';
@@ -130,12 +147,15 @@ function App() {
             detailMdString += '**Categorization Result:** \n\n ';
             detailMdString += `${response.data.result} \n`;
             setContent(detailMdString);
-            setFileType('md');
+            console.log(detailMdString);
+            setFileType('html'); setIsLoading(false);
         });
+        
     }
 
     const handleComparePapers = () => {
         console.log("handleComparePapers...");
+        setIsLoading(true);
         getBibEntryComparison(selectedBibs).then(response => {
             console.log("response.data: ", response.data.result);
             let detailMdString = '';
@@ -145,12 +165,14 @@ function App() {
             detailMdString += '**Comparison Result:** \n\n ';
             detailMdString += `${response.data.result} \n`;
             setContent(detailMdString);
-            setFileType('md');
+            setFileType('html'); setIsLoading(false);
         });
+        
     };
     
     const handleGenerateChart = () => {
         console.log("handleGenerateChart...");
+        setIsLoading(true);
         getBibEntryChart(selectedBibs).then(response => {
             console.log("response.data: ", response.data.image_url);
             let full_image_url = BASE_URL+"/"+response.data.image_url.replace(/\\/g, '/');
@@ -158,8 +180,17 @@ function App() {
             let detailHTMLString = `<img src="${full_image_url}" alt="Generated Chart" />`;
             setContent(detailHTMLString);
             setFileType('html');
+            setIsLoading(false);
         });
+        
     };
+
+    const handleSwitchToUpload = () => {
+        console.log("handleSwitchToUpload...");
+        setSelectedBibs([]);
+        setFileType('');
+    };
+    
 
     
     return (
@@ -170,6 +201,8 @@ function App() {
                 onReadPaper={handleReadPaper}
                 onGenerateSummary={handleSummaryEntry}
                 onDeleteEntry={handleDeleteEntry}
+                onReset={handleReset}
+                onUpload={handleSwitchToUpload}
                 onCategorize={handleCategorizeThemes}
                 onCompare={handleComparePapers}
                 onGenerateChart={handleGenerateChart}
@@ -177,13 +210,20 @@ function App() {
             />
 
             <div className="container">
-                <Sidebar 
-                    papers={bibs} 
-                    onUpload={handleUpload} 
-                    onPaperSelect={handlePaperSelect} 
-                    selectedPapers={selectedBibs} 
-                />
-                <DisplayArea content={content} fileType={fileType} />
+                {isLoading==true? <Loading/>: 
+                <>
+                    <Sidebar 
+                        papers={bibs} 
+                        onPaperSelect={handlePaperSelect} 
+                        selectedPapers={selectedBibs} 
+                    />
+                    <DisplayArea 
+                        onUpload={handleUpload} 
+                        content={content} 
+                        fileType={fileType} 
+                    />
+                    {/* <SidebarRight selectedPapers={selectedBibs}/> */}
+                </>}
             </div>
         </div>
     );

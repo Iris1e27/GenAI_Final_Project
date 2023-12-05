@@ -7,12 +7,16 @@ body {
 
 /* 顶部导航栏样式 */
 .navbar {
-    background-color: #2a4071;  /* #dddddd #8ea3d3 */
-    color: white;
+    /* background-color: #20b2ab47; */
+    color: 	#20B2AA;
     padding: 1.5rem;  /* top right bottom left */
     display: flex;
+    max-height: 14%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     justify-content: space-between;  /* 确保内容在两侧分布 */
-    align-items: center;
+    position: fixed;
+    top: 0;
+    width: 100%;
 }
 
 .navbar .buttons { /* 新增：用于包装按钮的容器 */
@@ -30,7 +34,8 @@ body {
 .navbar .product-name {  /* 新增：产品名称样式 */
     font-size: 1.5rem;
     font-weight: bold;
-    color: #dddddd;  /* 可选：黄色，使产品名更显眼 */
+    width: 15%;
+    color: #20B2AA;  /* 可选：黄色，使产品名更显眼 */
 }
 
 /* 主体部分布局样式 */
@@ -42,14 +47,36 @@ body {
 /* 侧边栏样式 */
 .sidebar {
     width: 20%;
-    background-color: rgba(197, 209, 232, 0.65);  /* 修改：设置为更浅的蓝色背景 */
-    border-right: 1px solid #555;
+    /* background-color: #20b2ab47; */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     padding: 1rem;
+    top: 14%;
+    left: 0;
+    max-width: 20%;
+    position: fixed; 
+}
+
+.sidebar-right {
+    width: 20%;
+    /* background-color: #20b2ab47; */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    padding: 1rem;
+    top: 14%;
+    left: 80%;
+    max-width: 20%;
+    position: fixed; 
+}
+
+/* 侧边栏内容容器样式，添加滚动栏 */
+.sidebar-content {
     overflow-y: auto;
+    height: 80vh;
+    max-height: 80vh; /* 设置内容容器的最大高度，确保不超过屏幕高度减去导航栏的高度 */
 }
 
 .sidebar button {
-    width: 100%;
+    width: 90%;
+    align-self: center;
     padding: 0.5rem;
     margin-top: 1rem;
     margin-bottom: 1rem;
@@ -62,19 +89,30 @@ body {
 
 .sidebar li {
     padding: 0.5rem;
-    border-bottom: 1px solid #eee;
+    border-bottom: 2px solid #eee;
+}
+
+.sidebar li .grey-text {
+    color: rgba(128, 128, 128, 0.435);
 }
 
 /* 为选中的论文添加高亮样式 */
 .sidebar li.selected {
-    background-color: #2a4071; 
+    background-color: #18918b;
     color: white;
 }
 
-li {
-    white-space: nowrap;  /* 保持内容在一行 */
-    overflow-x: auto;    /* 当内容超出宽度时显示水平滚动条 */
+.sidebar li.selected .grey-text {
+    color: rgb(219, 216, 216);
 }
+
+/* 其他样式保持不变 */
+li {
+    white-space: nowrap;
+    overflow-x: auto;
+    border-radius: 5px;
+}
+
 
 
 /* 主显示区域样式 */
@@ -82,35 +120,118 @@ li {
     flex: 1;
     padding: 1rem;
     overflow-y: auto;
+    top: 14%;
+    left: 25%;
+    position: fixed;
+    height: 80vh;
+    max-height: 80vh; /* 设置内容容器的最大高度，确保不超过屏幕高度减去导航栏的高度 */
+    /* background-color: #20b2ab47; */
 }
 
 button {
-    background-color: #8ea3d3;
-    color: white;  /* 使得按钮上的文字为白色，确保良好的对比度 */
+    /* background-color: #ffffff; */
+    background-color: #20b2ab47;
+    color: #20B2AA;  /* 使得按钮上的文字为白色，确保良好的对比度 */
     border: none;  /* 移除默认边框 */
     cursor: pointer;  /* 当鼠标悬停在按钮上时，显示为手形 */
     transition: background-color 0.3s ease;  /* 添加一个过渡效果，使颜色变化更平滑 */
     font-size: 1.2rem;  /* 增大所有按钮的字体大小 */
+    border-radius: 5px; /* 可选：添加圆角效果 */
+}
+
+.selected-file {
+    background-color: #20b2ab47;
+    color: #20B2AA;  /* 使得按钮上的文字为白色，确保良好的对比度 */
+    border: none;  /* 移除默认边框 */
+    cursor: pointer;  /* 当鼠标悬停在按钮上时，显示为手形 */
+    transition: background-color 0.3s ease;  /* 添加一个过渡效果，使颜色变化更平滑 */
+    font-size: 1.2rem;  /* 增大所有按钮的字体大小 */
+    border-radius: 5px; /* 可选：添加圆角效果 */
+    padding: 1rem;
 }
 
 button:hover {
-    background-color: #6c87b8;  /* 当鼠标悬停在按钮上时，颜色稍微变深 */
+    background-color: #18918b;  /* 当鼠标悬停在按钮上时，颜色稍微变深 */
+    color: #fff;
 }
 
 .display-area {
     font-family: 'Arial', sans-serif;
     color: #333;
-    padding: 15px;
+    flex: 1;
+    padding: 1rem;
+    overflow-y: auto;
     word-wrap: break-word; /* 允许长单词或URL在必要时换行 */
     overflow-wrap: break-word; /* 同上，确保内容不会溢出 */
     overflow-x: auto; /* 允许必要时水平滚动 */
     white-space: pre-wrap; /* 保持空白符的格式，同时允许文本换行 */
 }
+
 
 .display-area ul, li {
     word-wrap: break-word; /* 允许长单词或URL在必要时换行 */
     overflow-wrap: break-word; /* 同上，确保内容不会溢出 */
     overflow-x: auto; /* 允许必要时水平滚动 */
     white-space: pre-wrap; /* 保持空白符的格式，同时允许文本换行 */
+    border-radius: 5px; /* 可选：添加圆角效果 */
 }
 
+
+.display-area .upload-area {
+    display: flex; /* 使用flex布局 */
+    justify-content: space-between; /* 子元素两侧分布 */
+    align-items: center; /* 垂直居中子元素 */
+    /* 如果你想要更多的空间，可以调整padding */
+    padding: 1rem; /* 可选，根据需要调整内边距 */
+    /* 根据需要添加边框、背景等样式 */
+}
+
+.display-area button {
+    align-self: center;
+    padding: 0.5rem;
+}
+
+
+.loading-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* 或根据需要调整高度 */
+    width: 100%;
+}
+
+.loading-spinner {
+    border: 5px solid #f3f3f3; /* 轻色边框 */
+    border-top: 5px solid #18918b; /* 蓝色边框 */
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+
+.prompt {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.custom-file-input {
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.custom-file-input:hover {
+  color: #18918b;
+}
+
+.detail-text {
+  font-size: 16px;
+  margin: 35px;
+  line-height: 1.2;
+}

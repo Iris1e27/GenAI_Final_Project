@@ -44,6 +44,15 @@ def delete_entry(ID: str):
     else:
         raise HTTPException(status_code=404, detail="Entry not found or could not be deleted")
     
+@router.delete("/delete_all")
+def delete_all_entries():
+    if db_utils.delete_all_entries():
+        print("Entries deleted?")
+        return {"message": "All entries deleted successfully"}
+    else:
+        # 如果删除失败，抛出500内部服务器错误，而不是404
+        raise HTTPException(status_code=500, detail="An error occurred while deleting entries")
+
 @router.get("/summary/{ID}")
 def get_a_summary(ID: str):
     entry = db_utils.get_entry_by_id(ID)
