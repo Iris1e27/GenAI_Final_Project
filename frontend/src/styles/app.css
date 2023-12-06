@@ -178,7 +178,7 @@ button:hover {
 
 
 .display-area .upload-area {
-    display: flex; /* 使用flex布局 */
+    flex: 1;
     justify-content: space-between; /* 子元素两侧分布 */
     align-items: center; /* 垂直居中子元素 */
     /* 如果你想要更多的空间，可以调整padding */
@@ -234,4 +234,37 @@ button:hover {
   font-size: 16px;
   margin: 35px;
   line-height: 1.2;
+}
+
+#floating-box {
+    position: fixed; /* 固定位置，即使页面滚动，元素也会停留在视窗的相同位置 */
+    top: 58%; /* 设置顶部距离为视窗高度的50% */
+    left: 75%; /* 设置左侧距离为视窗宽度的50% */
+    width: 80vh; /* 悬浮框的宽度 */
+    height: 20vh; /* 悬浮框的高度 */
+    color: #20B2AA;
+    font-size: 28px;
+    line-height: 1.8;
+    font-weight: bold;
+    padding: 10px; /* 内边距 */
+    box-sizing: border-box; /* 使得padding不会改变元素的实际大小 */
+    z-index: 1001; /* 确保悬浮框在页面中的其他元素之上 */
+    transform: translate(-50%, -50%); /* 使用transform来调整元素的确切位置 */
+    align-items: center; /* 垂直居中 */
+    text-align: center; /* 文本居中对齐 */
+  }
+  
+  
+.landing-page {
+    position: fixed; /* 固定位置，即使页面滚动，元素也会停留在视窗的相同位置 */
+    top: 70%; /* 设置顶部距离为视窗高度的50% */
+    left: 30%; /* 设置左侧距离为视窗宽度的50% */
+    width: 100vh; /* 悬浮框的宽度 */
+    height: 100vh; /* 悬浮框的高度 */
+    font-size: 24px;
+    line-height: 1.2;
+    padding: 10px; /* 内边距 */
+    box-sizing: border-box; /* 使得padding不会改变元素的实际大小 */
+    z-index: 1000; /* 确保悬浮框在页面中的其他元素之上 */
+    transform: translate(-50%, -50%); /* 使用transform来调整元素的确切位置 */
 }

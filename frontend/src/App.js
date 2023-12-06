@@ -4,6 +4,7 @@ import Loading from './components/Loading';
 import Sidebar from './components/Sidebar';
 import SidebarRight from './components/SidebarRight';
 import DisplayArea from './components/DisplayArea';
+import LandingPage from './components/LandingPage';
 import { uploadBibFile, fetchAllBibEntries, fetchBibEntry, deleteBibEntry, deleteAllBibEntries, getBibEntryURL, getBibEntrySummary } from './services/api';
 import { getBibEntryCategorization, getBibEntryChart, getBibEntryComparison } from './services/api';
 import { BASE_URL, uploadPaper, fetchPaperList, fetchDocument } from './services/api';
@@ -15,12 +16,15 @@ function App() {
     const [content, setContent] = useState('');
     const [fileType, setFileType] = useState(''); // 新增：文件类型状态
     const [isLoading, setIsLoading] = useState(false);
+    const [isLandingPage, setisLandingPage] = useState(true);
 
     useEffect(() => {
         fetchAllBibEntries()
             .then(response => {
                 setBibs(response.data);  // 设置文件列表
                 console.log("fetchAllBibEntries: ", response.data);
+                if(bibs.length > 0) setisLandingPage(false);
+                else setisLandingPage(true);
             })
             .catch(error => {
                 console.error("Error fetching the file list:", error);
@@ -34,7 +38,7 @@ function App() {
             console.log("response.data: ", response.data.bibs);
             setBibs(response.data.bibs);
             setContent(`You have uploaded ${response.data.bibs.length} paper(s) in total. \n`);
-            setFileType('html');
+            setFileType('html'); setisLandingPage(false);
         });
     };
 
@@ -58,6 +62,7 @@ function App() {
         fetchDocument("how_to_use.md").then(response => {
             setContent(response.data);
             setFileType('md'); // 设置文件类型为Markdown
+            setisLandingPage(false);
         });
     };
 
@@ -106,7 +111,12 @@ function App() {
         let bib = selectedBibs[0];
         getBibEntrySummary(bib.ID).then(response => {
             console.log("response.data: ", response.data.summary);
-            setContent(`<strong>Summary for \"${bib.title}\": </strong><br><br> ${response.data.summary }`);
+            let detailHtmlString = '';
+            detailHtmlString += `<br><br><br><br>`
+            detailHtmlString += `<h2>Summary for \"${bib.title}\": </h2><br><br><br> ${response.data.summary }`
+            detailHtmlString += `<br><br><br><br>`
+            detailHtmlString += `<strong>Keywords: </strong><br><br><br>\"${bib.keywords}\"`
+            setContent(detailHtmlString);
             setFileType('html'); setIsLoading(false);
         });
         
@@ -131,7 +141,7 @@ function App() {
         });
         setBibs([]); 
         setSelectedBibs([]);
-        setFileType('');
+        setFileType(''); setisLandingPage(true);
     };
     
 
@@ -141,6 +151,7 @@ function App() {
         getBibEntryCategorization(selectedBibs).then(response => {
             console.log("response.data: ", response.data.result);
             let detailMdString = '';
+            detailMdString += `<br><br><br><br>`
             selectedBibs.forEach((entry, idx) => {
                 detailMdString += `**Paper ${idx}: ${entry.title}**\n\n`;
             });
@@ -189,6 +200,8 @@ function App() {
         console.log("handleSwitchToUpload...");
         setSelectedBibs([]);
         setFileType('');
+        if(bibs.length > 0) setisLandingPage(false);
+        else setisLandingPage(true);
     };
     
 
@@ -207,21 +220,25 @@ function App() {
                 onCompare={handleComparePapers}
                 onGenerateChart={handleGenerateChart}
                 selectedPapers={selectedBibs}
+                papers={bibs}
             />
 
             <div className="container">
                 {isLoading==true? <Loading/>: 
                 <>
+                    {isLandingPage == true? <LandingPage onUpload={handleUpload}/>:
+                    <>
                     <Sidebar 
                         papers={bibs} 
                         onPaperSelect={handlePaperSelect} 
                         selectedPapers={selectedBibs} 
                     />
                     <DisplayArea 
-                        onUpload={handleUpload} 
+                        onUpload={handleUpload}
                         content={content} 
                         fileType={fileType} 
                     />
+                    </>}
                     {/* <SidebarRight selectedPapers={selectedBibs}/> */}
                 </>}
             </div>

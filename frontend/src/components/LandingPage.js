@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import ReactMarkdown from 'react-markdown';
-import 'github-markdown-css';
-import PDFDisplay from './PDFDisplay';
-import GooglePDFViewer from './GooglePDFViewer';
 import FloatingBox from './FloatingBox';
 
-function DisplayArea({ onUpload, content, fileType }) {
+
+function LandingPage({ onUpload }) {
 
     const [selectedFile, setSelectedFile] = useState(null);
 
@@ -20,31 +17,8 @@ function DisplayArea({ onUpload, content, fileType }) {
         }
     };
 
-    console.log("fileType:"+fileType);
-    if (fileType === 'md') {
-        return (
-            <div className="display-area">
-                <ReactMarkdown>{content}</ReactMarkdown>
-            </div>
-        );
-    } else if (fileType === 'pdf') {
-        return (
-            <div className="display-area">
-                {/* <PDFDisplay fileUrl={content} /> */}
-                <GooglePDFViewer fileURL={content} />
-
-            </div>
-        );
-    } else if (fileType === 'html') {
-        
-        return (
-            <div className="display-area" dangerouslySetInnerHTML={{ __html: content }}>
-            </div>
-        );
-    } else {
-        return (
-            <div className="display-area">
-                <br /><br />
+    return (<>
+            <div className='landing-page'>
                 <label className='prompt'>Upload 📂</label>
                 <div className='detail-text'>
                     <input
@@ -73,11 +47,20 @@ function DisplayArea({ onUpload, content, fileType }) {
                     </label>
                 </div>
                 <br></br>
-                <FloatingBox text={'Upload more papers Now!👈'}/>
-            </div>
+                
+                <label className='prompt'>Select 📍</label>
+                <div className='detail-text'>Select more than one papers by `ctrl`+`click`👈</div>
+
+                <label className='prompt'>Then 🚀</label>
+                <div className='detail-text'> Click given `button` on the navbar👆</div>
+
+                <label className='prompt'>After 📑</label>
+                <div className='detail-text'> Click `reset` to clear all papers👆</div>
+                </div>
+                <FloatingBox text={'Explore papers collection from Zotero!📖'}/>
+            </>
         );
-    }
+
 }
 
-
-export default DisplayArea;
+export default LandingPage;

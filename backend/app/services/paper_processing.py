@@ -64,19 +64,23 @@ def get_chart_by_entries(entries):
     tfidf_vectorizer = TfidfVectorizer()
     tfidf_matrix = tfidf_vectorizer.fit_transform([entry['abstract'] for entry in entries])
     similarity_matrix = cosine_similarity(tfidf_matrix)
+    
 
     # 添加节点和边
     for i, entry in enumerate(entries):
         G.add_node(i, label=entry['title'], year=entry['year'], author=', '.join(entry['author']))
+        print("i:"+str(i)+","+entry['title'])
         for j in range(i + 1, len(entries)):
             similarity = similarity_matrix[i, j]
+            print("i:"+str(i)+",j:"+str(j)+",sim:"+str(similarity))
             G.add_edge(i, j, weight=similarity)
 
     # 设置节点和边的颜色和大小
     current_year = max([int(entry['year']) for entry in entries])
     node_colors = [(current_year - int(entry['year'])) / (current_year) for entry in entries]
     edge_colors = [G[u][v]['weight'] for u, v in G.edges()]
-    edge_weights = [G[u][v]['weight'] * 5 for u, v in G.edges()]
+    edge_weights = [G[u][v]['weight'] *10 for u, v in G.edges()]
+    print(edge_weights)
 
     # 绘制网络图
     pos = nx.spring_layout(G, seed=42)
@@ -90,14 +94,14 @@ def get_chart_by_entries(entries):
                         bbox=dict(facecolor='white', alpha=0.6, edgecolor='none'))
 
     # 获取相似度矩阵的最小和最大值
-    min_similarity = np.min(similarity_matrix)
-    max_similarity = np.max(similarity_matrix)
-    print("min_similarity:"+str(max_similarity))
+    min_similarity = min(edge_weights)
+    max_similarity = max(edge_weights)
+    print("min_similarity:"+str(min_similarity))
     print("max_similarity:"+str(max_similarity))
 
     # 创建相似度颜色条
     similarity_norm = plt.Normalize(vmin=min_similarity, vmax=max_similarity)
-    similarity_sm = plt.cm.ScalarMappable(cmap='plasma_r', norm=similarity_norm)
+    similarity_sm = plt.cm.ScalarMappable(cmap='plasma', norm=similarity_norm)
     similarity_sm.set_array([])
     ax = plt.gca()
     similarity_cbar = plt.colorbar(similarity_sm, ax=ax, orientation='vertical', fraction=0.046, pad=0.09)
