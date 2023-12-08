@@ -1,6 +1,12 @@
-# How to run
+# Research Hive 
 
-## Backend
+Explore papers collection from Zotero! 
+
+Take a look from [here](http://52.54.137.204:3000/)
+
+## How to run
+
+### Backend
 
 1. `cd backend `
 
@@ -16,7 +22,7 @@ api_key = sk-...
 
 5. `uvicorn app.main:app --reload`
 
-## Frontend
+### Frontend
 
 1. `cd frontend`
 
