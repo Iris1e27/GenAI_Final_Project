@@ -83,8 +83,6 @@ function App() {
         fetchBibEntry(selectedBibs[0].ID)
             .then(response => {
                 console.log("response.data", response.data);
-    
-                // 设置详细信息状态为构建的字符串
                 setContent(getBibEntryString(response.data));
                 setFileType('html');
             })
@@ -98,8 +96,7 @@ function App() {
         let bib = selectedBibs[0];
         getBibEntryURL(bib.ID).then(response => {
             console.log("response.data: ", response.data.url);
-            // 在新标签页中打开URL
-            window.open(response.data.url, '_blank');
+            window.open(response.data.url, '_blank');  // open url in new page
             setContent(`Now you are reading this paper: <strong>\"${bib.title}\"</strong>. \n`);
             setFileType('html');
         });
@@ -144,6 +141,7 @@ function App() {
         setFileType(''); setisLandingPage(true);
     };
     
+    const markdownIt = require('markdown-it')(); // markdown to html
 
     const handleCategorizeThemes = () => {
         console.log("handleCategorizeThemes...");
@@ -151,14 +149,16 @@ function App() {
         getBibEntryCategorization(selectedBibs).then(response => {
             console.log("response.data: ", response.data.result);
             let detailMdString = '';
-            detailMdString += `<br><br><br><br>`
             selectedBibs.forEach((entry, idx) => {
                 detailMdString += `**Paper ${idx}: ${entry.title}**\n\n`;
             });
-            detailMdString += '**Categorization Result:** \n\n ';
+            detailMdString += '\n\n ';
             detailMdString += `${response.data.result} \n`;
-            setContent(detailMdString);
-            console.log(detailMdString);
+            let detailHtmlString = `<br><br><br><br>`
+                + `<h2>Categorization Result for Selected ${selectedBibs.length} Papers: </h2><br><br><br>` 
+                + markdownIt.render(detailMdString);
+            setContent(detailHtmlString);
+            console.log(detailHtmlString);
             setFileType('html'); setIsLoading(false);
         });
         
@@ -178,7 +178,6 @@ function App() {
             setContent(detailMdString);
             setFileType('html'); setIsLoading(false);
         });
-        
     };
     
     const handleGenerateChart = () => {
