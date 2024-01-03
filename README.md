@@ -2,7 +2,7 @@
 
 Explore papers collection from Zotero! 
 
-Take a look from [here](http://52.54.137.204:3000/)
+Take a look from [here](http://52.54.137.204:3000/) (Note: No longer available since 2024/1/3)
 
 ## How to run
 
